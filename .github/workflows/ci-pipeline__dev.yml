@@ -1,0 +1,38 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# CI Pipeline — dev branch
+#
+# Triggers on every push to dev that touches source or tests.
+# Docs-only and team/ changes are ignored.
+#
+# Version bump: minor (X.Y.Z → X.Y.Z+1)
+# ═══════════════════════════════════════════════════════════════════════════════
+
+name: CI Pipeline - dev
+
+on:
+  push:
+    branches:
+      - dev
+    paths-ignore:
+      - 'team/**'
+      - 'library/**'
+      - '**/*.md'
+      - '.github/workflows/ci-pipeline__main.yml'
+  pull_request:
+    branches:
+      - dev
+    paths-ignore:
+      - 'team/**'
+      - 'library/**'
+      - '**/*.md'
+
+permissions:
+  contents: write
+
+jobs:
+  ci:
+    uses: ./.github/workflows/ci-pipeline.yml
+    with:
+      git_branch         : 'dev'
+      release_type       : 'minor'
+      should_increment_tag: true

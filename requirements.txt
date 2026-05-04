@@ -1,0 +1,8 @@
+osbot-utils
+osbot-aws
+sg-compute
+sgraph-ai-service-playwright-cli
+fastapi
+uvicorn[standard]
+boto3
+memory-fs
