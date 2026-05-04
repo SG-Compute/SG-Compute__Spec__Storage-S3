@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SG S3 Server — Call Log</title>
+<style>
+  body { font-family: monospace; background: #1a1a1a; color: #e0e0e0; margin: 0; padding: 16px; }
+  h1   { color: #a0c8ff; margin: 0 0 8px; font-size: 1.2em; }
+  #stats { color: #888; font-size: 0.85em; margin-bottom: 12px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.8em; }
+  th    { background: #2a2a2a; color: #888; text-align: left; padding: 4px 8px; position: sticky; top: 0; }
+  td    { padding: 3px 8px; border-bottom: 1px solid #2a2a2a; }
+  tr.local    td { color: #5dde5d; }
+  tr.proxy    td { color: #5daaff; }
+  tr.not-impl td { color: #ff6b6b; }
+  tr:hover td { background: #222; }
+  .badge { display: inline-block; padding: 1px 5px; border-radius: 3px; font-size: 0.75em; font-weight: bold; }
+  .badge-200 { background:#1a4a1a; color:#5dde5d; }
+  .badge-404 { background:#4a2a00; color:#ffaa44; }
+  .badge-501 { background:#4a0000; color:#ff6b6b; }
+  .badge-other { background:#2a2a2a; color:#aaa; }
+</style>
+</head>
+<body>
+<h1>🪣 SG S3 Server — Call Log</h1>
+<div id="stats">Loading…</div>
+<table id="log-table">
+  <thead>
+    <tr>
+      <th>Timestamp</th><th>Method</th><th>Path</th><th>Action</th>
+      <th>Status</th><th>ms</th>
+    </tr>
+  </thead>
+  <tbody id="log-body"></tbody>
+</table>
+<script>
+function badgeClass(status) {
+  if (status >= 200 && status < 300) return 'badge-200';
+  if (status === 404) return 'badge-404';
+  if (status === 501) return 'badge-501';
+  return 'badge-other';
+}
+
+function rowClass(action) {
+  if (action === 'NotImplemented' || action === 'Unknown') return 'not-impl';
+  return 'local';
+}
+
+async function refresh() {
+  try {
+    const r = await fetch('/call-log?limit=200');
+    const d = await r.json();
+    const entries = d.entries || [];
+    document.getElementById('stats').textContent =
+      `Total: ${d.total} | Showing: ${entries.length} | Auto-refresh: 5s`;
+    const tbody = document.getElementById('log-body');
+    tbody.innerHTML = '';
+    for (const e of [...entries].reverse()) {
+      const tr = document.createElement('tr');
+      tr.className = rowClass(e.aws_action);
+      const statusBadge = `<span class="badge ${badgeClass(e.response_status)}">${e.response_status}</span>`;
+      tr.innerHTML = `<td>${e.timestamp}</td><td><b>${e.method}</b></td><td>${e.path}</td>`
+        + `<td>${e.aws_action}</td><td>${statusBadge}</td><td>${e.response_time_ms}</td>`;
+      tbody.appendChild(tr);
+    }
+  } catch(err) {
+    document.getElementById('stats').textContent = 'Error fetching call log: ' + err;
+  }
+}
+
+refresh();
+setInterval(refresh, 5000);
+</script>
+</body>
+</html>

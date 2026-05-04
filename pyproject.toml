@@ -1,0 +1,36 @@
+# ═══════════════════════════════════════════════════════════════════════════════
+# sg-compute-spec-storage-s3 — S3 Storage Node spec + server
+# ═══════════════════════════════════════════════════════════════════════════════
+
+[project]
+name            = "sg-compute-spec-storage-s3"
+version         = "0.1.0"
+description     = "SG/Compute — S3-compatible storage node spec and server"
+authors         = [{ name = "Dinis Cruz", email = "dinis@the-cyber-boardroom.com" }]
+license         = { text = "Apache-2.0" }
+requires-python = ">=3.12"
+dependencies    = [
+    "osbot-utils",
+    "osbot-aws",
+    "sg-compute",
+    "sgraph-ai-service-playwright-cli",
+    "fastapi",
+    "uvicorn[standard]",
+    "boto3",
+    "memory-fs",
+]
+
+[project.entry-points."sg_compute.specs"]
+s3_server = "sg_compute_specs.s3_server.manifest"
+
+[tool.setuptools]
+package-dir = { "" = "." }
+
+[tool.setuptools.packages.find]
+where   = ["."]
+include = ["sg_compute_specs*", "sg_s3_server*"]
+exclude = ["sg_compute__tests*", "*__pycache__*"]
+
+[build-system]
+requires      = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
