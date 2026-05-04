@@ -1,7 +1,6 @@
 osbot-utils
 osbot-aws
-sg-compute
-sgraph-ai-service-playwright-cli
+sgraph-ai-service-playwright @ git+https://github.com/the-cyber-boardroom/SGraph-AI__Service__Playwright.git@dev
 fastapi
 uvicorn[standard]
 boto3

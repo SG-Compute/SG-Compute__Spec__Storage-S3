@@ -53,6 +53,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          pip install poetry-core                                                    # required to build sgraph-ai-service-playwright from git source
           pip install -r requirements.txt
           pip install pytest pytest-timeout httpx
           pip install -e .

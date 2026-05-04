@@ -12,8 +12,7 @@ requires-python = ">=3.12"
 dependencies    = [
     "osbot-utils",
     "osbot-aws",
-    "sg-compute",
-    "sgraph-ai-service-playwright-cli",
+    "sgraph-ai-service-playwright",
     "fastapi",
     "uvicorn[standard]",
     "boto3",
@@ -28,7 +27,7 @@ package-dir = { "" = "." }
 
 [tool.setuptools.packages.find]
 where   = ["."]
-include = ["sg_compute_specs*", "sg_s3_server*"]
+include = ["sg_compute*", "sg_compute_specs*", "sg_s3_server*"]
 exclude = ["sg_compute__tests*", "*__pycache__*"]
 
 [build-system]
